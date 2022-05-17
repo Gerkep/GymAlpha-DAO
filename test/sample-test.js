@@ -5,7 +5,6 @@ describe("CentralDAO", function () {
   let centralDAO;
   let owner;
   let addr1;
-  let addr2;
 
   before(async function () {
     const centralFactory = await ethers.getContractFactory("CentralDAO");
@@ -14,7 +13,6 @@ describe("CentralDAO", function () {
     const accounts = await ethers.getSigners();
     owner = accounts[0];
     addr1 = accounts[1];
-    addr2 = accounts[2];
   });
 
   it("owner can create a voting", async function () {
@@ -101,5 +99,25 @@ describe("CentralDAO", function () {
     expect(err).to.equal(
       "VM Exception while processing transaction: reverted with reason string 'Voting can't be complete to finalize it'"
     );
+  });
+
+  it("user can't update activity date", async function () {
+    const contractWithUser = centralDAO.connect(addr1);
+    let err = "";
+    try {
+      await contractWithUser.updateActivity(1652729235);
+    } catch (e) {
+      err = e.message;
+    }
+    expect(err).to.equal(
+      "VM Exception while processing transaction: reverted with reason string 'Only owner can do it'"
+    );
+  });
+  
+  it("owner can update activity date", async function () {
+    const contractWithOwner = centralDAO.connect(owner);
+    await contractWithOwner.updateActivity(1652729255);
+    expect(
+      (await contractWithOwner.getLastPeriodActivity()).toString()).to.equal("2");
   });
 });

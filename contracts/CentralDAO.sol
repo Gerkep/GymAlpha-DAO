@@ -39,13 +39,14 @@ contract CentralDAO{
         voting.approvals[msg.sender] = true;
         voting.approvalCount++;
 
-        if(activityDate > userTimestamp[msg.sender]){
+        if(activityDate >= userTimestamp[msg.sender]){
             currentPeriodActivity = currentPeriodActivity + 1;
             userTimestamp[msg.sender] = block.timestamp;
         }
     }
 
     function updateActivity(uint newTimestamp) public restricted {
+        require(newTimestamp <= block.timestamp, "You can't set date for the future");
         activityDate = newTimestamp;
         lastPeriodActivity = currentPeriodActivity;
         currentPeriodActivity = 0;
@@ -74,6 +75,10 @@ contract CentralDAO{
         Voting storage voting = votings[index];
         return voting.approvalCount;
     }
+    function getLastPeriodActivity() public view returns(uint){
+        return lastPeriodActivity;
+    }
+
 
 
 }
