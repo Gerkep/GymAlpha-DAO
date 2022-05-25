@@ -3,7 +3,7 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./CentralNFT.sol";
+import "./GenesisNFT.sol";
 import "./GymAlphaToken.sol";
 
 contract AlphaStaking is Ownable, IERC721Receiver {
@@ -16,14 +16,14 @@ contract AlphaStaking is Ownable, IERC721Receiver {
     }
     mapping(uint256 => Stake) public vault;
 
-    GymAlphaGenesis nft;
+    GenesisNFT nft;
     GAToken token;
 
     event NFTStaked(address owner, uint256 tokenId, uint256 value);
     event NFTUnstaked(address owner, uint256 tokenId, uint256 value);
     event Claimed(address owner, uint256 amount);
 
-    constructor(GymAlphaGenesis _nft, GAToken _token){
+    constructor(GenesisNFT _nft, GAToken _token){
         nft = _nft;
         token = _token;
     }

@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-contract GymAlphaGenesis is ERC721, Ownable {
+contract GenesisNFT is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
   using Strings for uint256;
@@ -20,13 +20,10 @@ contract GymAlphaGenesis is ERC721, Ownable {
 
   constructor() ERC721("GymAlphaGenesis", "GAG") {}
     
-  function _baseURI() pure internal override returns (string memory) {
-    return "https://someuri/";
-  }
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory){
     require(_exists(tokenId), "Nonexistent token");
     string memory base = _baseURI();
-      return string(abi.encodePacked(base, tokenId.toString(), ".json"));
+    return string(abi.encodePacked(base, tokenId.toString(), ".json"));
   }
   function mintNFT(address recipient, uint8 amount, bytes32[] calldata _merkleProof) public payable {
     require(amount > 0 && amount <= maxMintAmountPerTx, "Invalid mint amount!");
