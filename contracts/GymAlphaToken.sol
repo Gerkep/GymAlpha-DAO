@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract GAToken is ERC20Capped{
-    constructor(uint256 cap) ERC20("GAToken", "GAT") ERC20Capped(cap){
-}
-
-    function issueToken(address receiver, uint amount) public{
-        _mint(receiver, amount);
+contract GymAlphaToken is ERC20{
+    address creator;
+    constructor() ERC20("GymAlphaToken", "GAT") {
+        _mint(msg.sender, 1000000000*10**18);
     }
 }

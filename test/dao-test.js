@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("CentralDAO", function () {
+describe("GenesisDAO", function () {
   let centralDAO;
   let owner;
   let addr1;

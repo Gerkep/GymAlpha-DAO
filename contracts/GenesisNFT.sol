@@ -29,7 +29,7 @@ contract GenesisNFT is ERC721, Ownable {
     string memory base = _baseURI();
     return string(abi.encodePacked(base, tokenId.toString(), ".json"));
   }
-  function mintNFT(address recipient, uint8 amount, bytes32[] calldata _merkleProof) public payable {
+  function mintNFT(address recipient, uint8 amount, bytes32[] calldata _merkleProof) public payable{
     // require(amount > 0 && amount <= maxMintAmountPerTx, "Invalid mint amount!");
     require(_tokenIds.current() + amount <= maxSupply, "Max supply exceeded!");
     require(!paused, "The contract is paused!");

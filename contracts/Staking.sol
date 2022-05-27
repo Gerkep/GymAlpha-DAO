@@ -2,9 +2,9 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./GenesisNFT.sol";
-import "./GymAlphaToken.sol";
 
 contract AlphaStaking is Ownable, IERC721Receiver {
     uint256 public totalStaked;
@@ -16,27 +16,25 @@ contract AlphaStaking is Ownable, IERC721Receiver {
     }
     mapping(uint256 => Stake) public vault;
 
-    GenesisNFT nft;
-    GAToken token;
+    IERC721 nft;
+    IERC20 token;
 
     event NFTStaked(address owner, uint256 tokenId, uint256 value);
     event NFTUnstaked(address owner, uint256 tokenId, uint256 value);
     event Claimed(address owner, uint256 amount);
 
-    constructor(GenesisNFT _nft, GAToken _token){
-        nft = _nft;
-        token = _token;
+    constructor(address nftAddress, address tokenAddress){
+        nft = IERC721(nftAddress);
+        token = IERC20(tokenAddress);
     }
     
-
     function stake(uint256[] calldata tokenIds) external {
         uint256 tokenId;
         for (uint i = 0; i<tokenIds.length; i++){
             tokenId = tokenIds[i];
             require(nft.ownerOf(tokenId) == msg.sender, "You don't have this NFT");
-            require(vault[tokenId].tokenId == 0, "Already staked");
+            nft.safeTransferFrom(msg.sender, address(this), tokenId);
             totalStaked += 1;
-            nft.transferFrom(msg.sender, address(this), tokenId);
             emit NFTStaked(msg.sender, tokenId, block.timestamp);
             vault[tokenId] = Stake({
                 tokenId: uint24(tokenId),
@@ -45,7 +43,7 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             });
         }
     }
-    function _unstakeNFT(address account, uint256[] calldata tokenIds) internal {
+    function unstakeNFT(address account, uint256[] calldata tokenIds) public {
         uint256 tokenId;
         for (uint i = 0; i<tokenIds.length; i++){
             tokenId = tokenIds[i];
@@ -53,11 +51,11 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             require(staked.owner == account, "You are not an owner");
             delete vault[tokenId];
             totalStaked -= 1;
-            nft.transferFrom(address(this), account, tokenId);
+            nft.safeTransferFrom(address(this), account, tokenId);
             emit NFTUnstaked(account, tokenId, block.timestamp);
         }
     }
-    function claim(uint256[] calldata tokenIds, bool _unstake) internal {
+    function claim(uint256[] calldata tokenIds, bool _unstake) public {
         uint256 tokenId;
         uint256 earned = 0;
 
@@ -66,7 +64,7 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             Stake memory staked = vault[tokenId];
             require(staked.owner == msg.sender, "You are not an owner");
             uint256 stakedAt = staked.timestamp;
-            earned += 1000 ether * (block.timestamp - stakedAt) / 1 days;
+            earned += block.timestamp - stakedAt;
             vault[tokenId] = Stake({
                 owner: msg.sender,
                 tokenId: uint24(tokenId),
@@ -74,21 +72,23 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             });
         }
         if(earned > 0) {
-            earned = earned / 1000;
-            token.issueToken(msg.sender, earned);
+            token.transferFrom(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, msg.sender, earned);
         }
         if (_unstake){
-            _unstakeNFT(msg.sender, tokenIds);
+            unstakeNFT(msg.sender, tokenIds);
         }
         emit Claimed(msg.sender, earned);
     }
-    function earningInfo(uint256[] calldata tokenIds) external view returns(uint256[1] memory info){
+    function earningInfo(uint256[] calldata tokenIds) external view returns(uint256 info){
         uint256 tokenId;
         uint earned = 0;
-        Stake memory staked = vault[tokenId];
-        uint256 stakedAt = staked.timestamp;
-        earned += 1000 ether * (block.timestamp - stakedAt) / 1 days;
-        return [earned];
+        for (uint i = 0; i < tokenIds.length; i++){
+            tokenId = tokenIds[i];
+            Stake memory staked = vault[tokenId];
+            uint256 stakedAt = staked.timestamp;
+            earned += block.timestamp - stakedAt;
+        }
+        return earned;
     }
     function onERC721Received(
         address operator,
@@ -96,7 +96,10 @@ contract AlphaStaking is Ownable, IERC721Receiver {
         uint256 tokenId,
         bytes calldata data
     ) external override pure returns (bytes4) {
-        require(from == address(0x0), "Cannot send nfts to Vault directly");
+        // require(from == address(0x0), "Cannot send nfts to Vault directly");
         return IERC721Receiver.onERC721Received.selector;
+    }
+    function getTotalStaked() public view returns(uint staked){
+        return totalStaked;
     }
 }
