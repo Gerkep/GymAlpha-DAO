@@ -10,7 +10,7 @@ contract GenesisNFT is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
   using Strings for uint256;
-  uint256 public cost = 0.005 ether;
+  uint256 public cost = 0.01 ether;
   uint256 public maxSupply = 5777;
   // uint256 public maxMintAmountPerTx = 1;
   uint256 public maxMintAmountPerAddress = 2;
@@ -21,7 +21,7 @@ contract GenesisNFT is ERC721, Ownable {
   constructor() ERC721("GymAlphaGenesis", "GAG") {}
 
   function _baseURI() pure internal override returns (string memory) {
-    return "https://someuri/";
+    return "https://gymalpha.mypinata.cloud/ipfs/QmQS98C3AFsKZ2AfT1zjU1gcAV7JMEvtYPBmp91KYphWkH/";
   }
   
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory){

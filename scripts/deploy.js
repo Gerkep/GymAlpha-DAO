@@ -6,12 +6,12 @@ async function main() {
   console.log("Deploying with account: ", deployer.address);
   console.log("Account balance: ", (await deployer.getBalance()).toString());
 
-  const NFT = await hre.ethers.getContractFactory("GenesisNFT");
-  const nft = await NFT.deploy();
+  const DAO = await hre.ethers.getContractFactory("CentralDAO");
+  const dao = await DAO.deploy(1653660678, 3);
 
-  await nft.deployed();
+  await dao.deployed();
 
-  console.log("NFT contract deployed to:", nft.address);
+  console.log("DAO contract deployed to:", dao.address);
 }
 
 main().catch((error) => {
