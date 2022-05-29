@@ -1,6 +1,6 @@
 Deploying with account:  0xf1466885C60c3b09739c71a305b84b6eC6021421
-Account balance:  172078145646268928
-NFT contract deployed to: 0x601e0F1ec070a5dE6C0a37dEE352602def4DB594
-Token contract deployed to: 0x5827429F9F34C6a78B15aD64A7892Fc8ABa37265
-Staking contract deployed to: 0x8a3Ab848D7AEd27B4b552a69d4e68138077F12Ae
-DAO contract deployed to: 0x3185D2d20092808D86Bd269fDC653A1fbe2e02Fb
+Account balance:  155750221723837681
+DAO contract deployed to: 0x4170E749A7E963DeE360b119b4A9B52d312C41d6
+NFT contract deployed to: 0x78F2eC0F35b09C03ea3A315759ba69B1b1595051
+Token contract deployed to: 0x19AB832907c6B0898aB84a1CFd74B8c34817B339
+Staking contract deployed to: 0x6395c8eaAd4Ba81377ce82E2Bb5C2a0223B15c7C
