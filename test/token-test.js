@@ -17,7 +17,7 @@ describe("Token", function () {
         acc1 = accounts[1];
     })
 
-    it("transfers token", async function () {
+    it("transfers  to ao ads some valu  sad id tbeing store di al;ets ttiy runnid adio token", async function () {
         const contractWithSigner = token.connect(owner);
         const ownerAddress = await owner.getAddress().then((addr) => addr.toString());
         const userAddress = await acc1.getAddress().then((addr) => addr.toString());

@@ -99,7 +99,4 @@ contract AlphaStaking is Ownable, IERC721Receiver {
         // require(from == address(0x0), "Cannot send nfts to Vault directly");
         return IERC721Receiver.onERC721Received.selector;
     }
-    function getTotalStaked() public view returns(uint staked){
-        return totalStaked;
-    }
 }

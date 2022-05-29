@@ -97,9 +97,4 @@ describe("Staking", function () {
             "VM Exception while processing transaction: reverted with reason string 'You don't have this NFT'"
         );
     });
-    it("Cdsf", async function () {
-        const stakingWithOwner = stakingContract.connect(owner);
-        const staked = await stakingWithOwner.totalStaked().then((value) => value.toString());
-        console.log(staked);
-    })
 })
