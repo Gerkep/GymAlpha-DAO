@@ -17,7 +17,7 @@ contract CentralDAO{
     uint public lastPeriodActivity;
     uint public activityDate;
     uint public numberOfVotings;
-    mapping (uint256 => Voting) votings;
+    mapping (uint256 => Voting) public votings;
 
     constructor(uint timestamp, uint initialActivity){ //epoch unix timestamp
         manager = msg.sender;

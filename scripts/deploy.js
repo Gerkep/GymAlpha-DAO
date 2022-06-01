@@ -8,20 +8,20 @@ async function main() {
 
   // const DAO = await hre.ethers.getContractFactory("CentralDAO");
   // const dao = await DAO.deploy(1653660678, 3);
-  // const NFT = await hre.ethers.getContractFactory("GenesisNFT");
-  // const nft = await NFT.deploy();
+  const NFT = await hre.ethers.getContractFactory("GenesisNFT");
+  const nft = await NFT.deploy();
   // const Token = await hre.ethers.getContractFactory("GymAlphaToken");
   // const token = await Token.deploy();
-  // await nft.deployed();
+  await nft.deployed();
   // await token.deployed();
   const Staking = await hre.ethers.getContractFactory("AlphaStaking");
-  const staking = await Staking.deploy("0x78F2eC0F35b09C03ea3A315759ba69B1b1595051", "0x19AB832907c6B0898aB84a1CFd74B8c34817B339");
+  const staking = await Staking.deploy(nft.address, "0x19AB832907c6B0898aB84a1CFd74B8c34817B339");
 
   // await dao.deployed();
   await staking.deployed();
 
   // console.log("DAO contract deployed to:", dao.address);
-  // console.log("NFT contract deployed to:", nft.address);
+  console.log("NFT contract deployed to:", nft.address);
   // console.log("Token contract deployed to:", token.address);
   console.log("Staking contract deployed to:", staking.address);
 }

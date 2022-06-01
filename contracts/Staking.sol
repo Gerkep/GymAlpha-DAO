@@ -15,7 +15,7 @@ contract AlphaStaking is Ownable, IERC721Receiver {
         address owner;
     }
     mapping(uint256 => Stake) public vault;
-
+    mapping(address => uint256) public userStake;
     IERC721 nft;
     IERC20 token;
 
@@ -36,6 +36,7 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             nft.safeTransferFrom(msg.sender, address(this), tokenId);
             totalStaked += 1;
             emit NFTStaked(msg.sender, tokenId, block.timestamp);
+            userStake[msg.sender]++;
             vault[tokenId] = Stake({
                 tokenId: uint24(tokenId),
                 timestamp: uint48(block.timestamp),
@@ -51,6 +52,7 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             require(staked.owner == account, "You are not an owner");
             delete vault[tokenId];
             totalStaked -= 1;
+            userStake[msg.sender]--;
             nft.safeTransferFrom(address(this), account, tokenId);
             emit NFTUnstaked(account, tokenId, block.timestamp);
         }

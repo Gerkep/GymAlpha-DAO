@@ -50,4 +50,7 @@ contract GenesisNFT is ERC721, Ownable {
   function setWhitelist(bool active) public onlyOwner {
    whitelist = active;
  }
+  function setMaxPerAddr(uint256 amount) public onlyOwner{
+   maxMintAmountPerAddress = amount;
+ }
 }
