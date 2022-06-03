@@ -5,10 +5,15 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract GenesisNFT is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
+
   using Strings for uint256;
   uint256 public cost = 0.01 ether;
   uint256 public maxSupply = 5777;
@@ -17,6 +22,16 @@ contract GenesisNFT is ERC721, Ownable {
   bool public paused = true;
   bool public whitelist = false;
   bytes32 public root = 0x0d0a1200bcb20302b68982d9e37e4968aff8830f258f26e823cdf77b65946edb;
+  struct Stake {
+      uint24 tokenId;
+      uint48 timestamp;
+      address owner;
+  }
+  uint256 public totalStaked;
+  mapping(uint256 => Stake) public stakingVault;
+  mapping(address => uint256) public userStake;
+  IERC721 nft;
+  IERC20 token;
 
   constructor() ERC721("GymAlphaGenesis", "GAG") {}
 

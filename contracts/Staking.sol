@@ -14,7 +14,7 @@ contract AlphaStaking is Ownable, IERC721Receiver {
         uint48 timestamp;
         address owner;
     }
-    mapping(uint256 => Stake) public vault;
+    mapping(uint256 => Stake) public stakingVault;
     mapping(address => uint256) public userStake;
     IERC721 nft;
     IERC20 token;
@@ -37,7 +37,7 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             totalStaked += 1;
             emit NFTStaked(msg.sender, tokenId, block.timestamp);
             userStake[msg.sender]++;
-            vault[tokenId] = Stake({
+            stakingVault[tokenId] = Stake({
                 tokenId: uint24(tokenId),
                 timestamp: uint48(block.timestamp),
                 owner: msg.sender
@@ -48,9 +48,9 @@ contract AlphaStaking is Ownable, IERC721Receiver {
         uint256 tokenId;
         for (uint i = 0; i<tokenIds.length; i++){
             tokenId = tokenIds[i];
-            Stake memory staked = vault[tokenId];
+            Stake memory staked = stakingVault[tokenId];
             require(staked.owner == account, "You are not an owner");
-            delete vault[tokenId];
+            delete stakingVault[tokenId];
             totalStaked -= 1;
             userStake[msg.sender]--;
             nft.safeTransferFrom(address(this), account, tokenId);
@@ -63,11 +63,11 @@ contract AlphaStaking is Ownable, IERC721Receiver {
 
         for (uint i = 0; i < tokenIds.length; i++){
             tokenId = tokenIds[i];
-            Stake memory staked = vault[tokenId];
+            Stake memory staked = stakingVault[tokenId];
             require(staked.owner == msg.sender, "You are not an owner");
             uint256 stakedAt = staked.timestamp;
             earned += block.timestamp - stakedAt;
-            vault[tokenId] = Stake({
+            stakingVault[tokenId] = Stake({
                 owner: msg.sender,
                 tokenId: uint24(tokenId),
                 timestamp: uint48(block.timestamp)
@@ -80,17 +80,6 @@ contract AlphaStaking is Ownable, IERC721Receiver {
             unstakeNFT(msg.sender, tokenIds);
         }
         emit Claimed(msg.sender, earned);
-    }
-    function earningInfo(uint256[] calldata tokenIds) external view returns(uint256 info){
-        uint256 tokenId;
-        uint earned = 0;
-        for (uint i = 0; i < tokenIds.length; i++){
-            tokenId = tokenIds[i];
-            Stake memory staked = vault[tokenId];
-            uint256 stakedAt = staked.timestamp;
-            earned += block.timestamp - stakedAt;
-        }
-        return earned;
     }
     function onERC721Received(
         address operator,
